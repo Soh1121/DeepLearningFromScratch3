@@ -19,6 +19,9 @@ class Function:
     def forward(self, x):
         raise NotImplementedError()
 
+    def backward(self, gy):
+        raise NotImplementedError()
+
 
 class Square(Function):
     def forward(self, x):
