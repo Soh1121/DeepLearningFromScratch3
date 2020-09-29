@@ -11,6 +11,9 @@ class Variable:
         self.creator = func
 
     def backward(self):
+        if self.grad is None:
+            self.grad = np.ones_like(self.data)
+
         funcs = [self.creator]
         while funcs:
             f = funcs.pop()  # 1. Get a function
@@ -68,6 +71,5 @@ def exp(x):
 
 x = Variable(np.array(0.5))
 y = square(exp(square(x)))
-y.grad = np.array(1.0)
 y.backward()
 print(x.grad)
