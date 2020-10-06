@@ -108,12 +108,10 @@ def add(x0, x1):
     return Add()(x0, x1)
 
 
-x = Variable(np.array(3.0))
-y = add(x, x)
+x = Variable(np.array(2.0))
+a = square(x)
+y = add(square(a), square(a))
 y.backward()
-print(x.grad)
 
-x.cleargrad()
-y = add(add(x, x), x)
-y.backward()
+print(y.data)
 print(x.grad)
