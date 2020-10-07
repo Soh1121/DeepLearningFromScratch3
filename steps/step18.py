@@ -3,6 +3,10 @@ import weakref
 import numpy as np
 
 
+class Config:
+    enable_backprop = True
+
+
 class Variable:
     def __init__(self, data):
         if data is not None:
@@ -71,11 +75,12 @@ class Function:
             ys = (ys,)
         outputs = [Variable(as_array(y)) for y in ys]
 
-        self.generation = max([x.generation for x in inputs])
-        for output in outputs:
-            output.set_creator(self)
-        self.inputs = inputs
-        self.outputs = [weakref.ref(output) for output in outputs]
+        if Config.enable_backprop:
+            self.generation = max([x.generation for x in inputs])
+            for output in outputs:
+                output.set_creator(self)
+            self.inputs = inputs
+            self.outputs = [weakref.ref(output) for output in outputs]
         return outputs if 1 < len(outputs) else outputs[0]
 
     def forward(self, xs):
@@ -120,3 +125,12 @@ y = add(x0, t)
 y.backward()
 print(y.grad, t.grad)  # None None
 print(x0.grad, x1.grad)  # 2.0 1.0
+
+Config.enable_backprop = True
+x = Variable(np.ones((100, 100, 100)))
+y = square(square(square(x)))
+y.backward()
+
+Config.enable_backprop = False
+x = Variable(np.ones((100, 100, 100)))
+y = square(square(square(x)))
