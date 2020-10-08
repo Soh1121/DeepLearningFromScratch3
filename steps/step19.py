@@ -49,6 +49,15 @@ class Variable:
     def dtype(self):
         return self.data.dtype
 
+    def __len__(self):
+        return len(self.data)
+
+    def __repr__(self):
+        if self.data is None:
+            return 'variable(None)'
+        p = str(self.data).replace('\n', '\n' + ' ' * 9)
+        return 'variable(' + p + ')'
+
     def set_creator(self, func):
         self.creator = func
         self.generation = func.generation + 1
@@ -149,27 +158,9 @@ def add(x0, x1):
     return Add()(x0, x1)
 
 
-x0 = Variable(np.array(1.0))
-x1 = Variable(np.array(1.0))
-t = add(x0, x1)
-y = add(x0, t)
-y.backward()
-print(y.grad, t.grad)  # None None
-print(x0.grad, x1.grad)  # 2.0 1.0
+x = Variable(np.array([[1, 2, 3], [4, 5, 6]]))
+x.name = 'x'
 
-Config.enable_backprop = True
-x = Variable(np.ones((100, 100, 100)))
-y = square(square(square(x)))
-y.backward()
-
-Config.enable_backprop = False
-x = Variable(np.ones((100, 100, 100)))
-y = square(square(square(x)))
-
-with using_config('enable_backprop', False):
-    x = Variable(np.array(2.0))
-    y = square(x)
-
-with no_grad():
-    x = Variable(np.array(2.0))
-    y = square(x)
+print(x.name)
+print(x.shape)
+print(x)
