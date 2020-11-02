@@ -215,6 +215,28 @@ def rsub(x0, x1):
     return sub(x1, x0)
 
 
+class Div(Function):
+    def forward(self, x0, x1):
+        y = x0 / x1
+        return y
+
+    def backward(self, gy):
+        x0, x1 = self.inputs[0].data, self.inputs[1].data
+        gx0 = gy / x1
+        gx1 = gy * (-x0 / x1 ** 2)
+        return gx0, gx1
+
+
+def div(x0, x1):
+    x1 = as_array(x1)
+    return Div()(x0, x1)
+
+
+def rdiv(x0, x1):
+    x1 = as_array(x1)
+    return div(x1, x0)
+
+
 Variable.__add__ = add
 Variable.__radd__ = add
 Variable.__mul__ = mul
@@ -222,6 +244,8 @@ Variable.__rmul__ = mul
 Variable.__neg__ = neg
 Variable.__sub__ = sub
 Variable.__rsub__ = rsub
+Variable.__truediv__ = div
+Variable.__rtruediv__ = rdiv
 
 x = Variable(np.array(2.0))
 y = -x
@@ -231,3 +255,6 @@ y1 = 2.0 - x
 y2 = x - 1.0
 print(y1)  # variable(0.0)
 print(y2)  # variable(1.0)
+
+y = 3.0 / x
+print(y)  # variable(1.5)
