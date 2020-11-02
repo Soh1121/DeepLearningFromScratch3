@@ -163,6 +163,7 @@ class Add(Function):
 
 
 def add(x0, x1):
+    x1 = as_array(x1)
     return Add()(x0, x1)
 
 
@@ -185,4 +186,7 @@ Variable.__mul__ = mul
 
 x = Variable(np.array(2.0))
 y = x + np.array(3.0)
+print(y)
+
+y = x + 3.0
 print(y)
