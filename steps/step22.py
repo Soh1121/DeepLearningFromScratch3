@@ -237,6 +237,26 @@ def rdiv(x0, x1):
     return div(x1, x0)
 
 
+class Pow(Function):
+    def __init__(self, c):
+        self.c = c
+
+    def forward(self, x):
+        y = x ** self.c
+        return y
+
+    def backward(self, gy):
+        x = self.inputs[0].data
+        c = self.c
+
+        gx = c * x ** (c - 1) * gy
+        return gx
+
+
+def pow(x, c):
+    return Pow(c)(x)
+
+
 Variable.__add__ = add
 Variable.__radd__ = add
 Variable.__mul__ = mul
@@ -246,6 +266,7 @@ Variable.__sub__ = sub
 Variable.__rsub__ = rsub
 Variable.__truediv__ = div
 Variable.__rtruediv__ = rdiv
+Variable.__pow__ = pow
 
 x = Variable(np.array(2.0))
 y = -x
@@ -258,3 +279,7 @@ print(y2)  # variable(1.0)
 
 y = 3.0 / x
 print(y)  # variable(1.5)
+
+y = x ** 3
+y.backward()
+print(y)  # variable(8.0)
