@@ -196,12 +196,38 @@ def neg(x):
     return Neg()(x)
 
 
+class Sub(Function):
+    def forward(self, x0, x1):
+        y = x0 - x1
+        return y
+
+    def backward(self, gy):
+        return gy, -gy
+
+
+def sub(x0, x1):
+    x1 = as_array(x1)
+    return Sub()(x0, x1)
+
+
+def rsub(x0, x1):
+    x1 = as_array(x1)
+    return sub(x1, x0)
+
+
 Variable.__add__ = add
 Variable.__radd__ = add
 Variable.__mul__ = mul
 Variable.__rmul__ = mul
 Variable.__neg__ = neg
+Variable.__sub__ = sub
+Variable.__rsub__ = rsub
 
 x = Variable(np.array(2.0))
 y = -x
 print(y)  # variable(-2.0)
+
+y1 = 2.0 - x
+y2 = x - 1.0
+print(y1)  # variable(0.0)
+print(y2)  # variable(1.0)
