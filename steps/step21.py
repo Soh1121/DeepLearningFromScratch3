@@ -178,15 +178,21 @@ class Mul(Function):
 
 
 def mul(x0, x1):
+    x1 = as_array(x1)
     return Mul()(x0, x1)
 
 
 Variable.__add__ = add
+Variable.__radd__ = add
 Variable.__mul__ = mul
+Variable.__rmul__ = mul
 
 x = Variable(np.array(2.0))
 y = x + np.array(3.0)
 print(y)
 
 y = x + 3.0
+print(y)
+
+y = 3.0 * x + 1.0
 print(y)
