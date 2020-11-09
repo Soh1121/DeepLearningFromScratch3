@@ -20,3 +20,29 @@ def _dot_func(f):
     for y in f.outputs:  # y is weakref
         ret += dot_edge.format(id(f), id(y()))
     return ret
+
+
+def get_dot_graph(output, verbose=True):
+    txt = ''
+    funcs = []
+    seen_set = set()
+
+    def add_func(f):
+        if f not in seen_set:
+            funcs.append(f)
+            # funcs.sort(key=lambda x: x.generation)
+            seen_set.add(f)
+
+    add_func(output.creator)
+    txt += _dot_var(output, verbose)
+
+    while funcs:
+        func = funcs.pop()
+        txt += _dot_func(func)
+        for x in func.inputs:
+            txt += _dot_var(x, verbose)
+
+            if x.creator is not None:
+                add_func(x.creator)
+
+    return 'digraph g {\n' + txt + '}'
