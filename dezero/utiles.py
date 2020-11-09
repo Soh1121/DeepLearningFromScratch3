@@ -1,3 +1,7 @@
+import os
+import subprocess
+
+
 def _dot_var(v, verbose=False):
     dot_var = '{} [label="{}", color=orange, style=filled]\n'
 
@@ -46,3 +50,26 @@ def get_dot_graph(output, verbose=True):
                 add_func(x.creator)
 
     return 'digraph g {\n' + txt + '}'
+
+
+def plot_dot_graph(output, verbose=True, to_file='graph.png'):
+    dot_graph = get_dot_graph(output, verbose)
+
+    tmp_dir = os.path.join(os.path.expanduser('~'), '.dezero')
+    if not os.path.exists(tmp_dir):
+        os.mkdir(tmp_dir)
+    graph_path = os.path.join(tmp_dir, 'tmp_graph.dot')
+
+    with open(graph_path, 'w') as f:
+        f.write(dot_graph)
+
+    extension = os.path.splitext(to_file)[1][1:]  # Extension(e.g. png, pdf)
+    cmd = 'dot {} -T {} -o {}'.format(graph_path, extension, to_file)
+    subprocess.run(cmd, shell=True)
+
+    # Return the image as a Jupyter Image object, to be displayed in-line.
+    try:
+        from IPython import display
+        return display.Image(filename=to_file)
+    except:
+        passupdate
