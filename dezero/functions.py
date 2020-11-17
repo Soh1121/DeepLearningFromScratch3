@@ -107,8 +107,8 @@ class Sum(Function):
         return gx
 
 
-def sum(x):
-    return Sum()(x)
+def sum(x, axis=None, keepdims=False):
+    return Sum(axis, keepdims)(x)
 
 
 class SumTo(Function):
@@ -137,7 +137,7 @@ class BroadcastTo(Function):
 
     def forward(self, x):
         self.x_shape = x.shape
-        y = x.broadcast_to(x, self.shape)
+        y = np.broadcast_to(x, self.shape)
         return y
 
     def backward(self, gy):
