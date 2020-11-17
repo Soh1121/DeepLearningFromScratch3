@@ -84,3 +84,21 @@ class Transpose(Function):
 
 def transpose(x):
     return Transpose()(x)
+
+
+# =============================================================================
+# sum / sum_to / broadcast_to / average / matmul / linear
+# =============================================================================
+class Sum(Function):
+    def forward(self, x):
+        self.x_shape = x.shape
+        y = x.sum()
+        return y
+
+    def backward(self, gy):
+        gx = broadcast_to(gy, self.x_shape)
+        return gx
+
+
+def sum(x):
+    return Sum()(x)
