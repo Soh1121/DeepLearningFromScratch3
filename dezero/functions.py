@@ -51,6 +51,22 @@ def tanh(x):
     return Tanh()(x)
 
 
+class Exp(Function):
+    def forward(self, x):
+        # xp = cuda.get_array_module(x)
+        y = exp(x)
+        return y
+
+    def backward(self, gy):
+        y = self.outputs[0]()  # weakref
+        gx = gy * y
+        return gx
+
+
+def exp(x):
+    return Exp()(x)
+
+
 # =============================================================================
 # Tensor operations: reshape / transpose / get_item / expand_dims / flatten
 # =============================================================================
@@ -194,6 +210,32 @@ def linear_simple(x, W, b=None):
     y = t + b
     t.data = None  # Release t.data (ndarray) for memory efficiency
     return y
+
+
+# =============================================================================
+# activation function: sigmoid / relu / softmax / log_softmax / leaky_relu
+# =============================================================================
+def sigmoid_simple(x):
+    x = as_variable(x)
+    y = 1 / (1 + exp(-x))
+    return y
+
+
+class Sigmoid(Function):
+    def forward(self, x):
+        # xp = cuda.get_array_module(x)
+        y = 1 / (1 + exp(-x))
+        # y = xp.tanh(x * 0.5) * 0.5 + 0.5  # Better implementation
+        return y
+
+    def backward(self, gy):
+        y = self.outputs[0]()
+        gx = gy * y * (1 - y)
+        return gx
+
+
+def sigmoid(x):
+    return Sigmoid()(x)
 
 
 # =============================================================================
