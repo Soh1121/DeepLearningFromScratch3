@@ -54,7 +54,7 @@ def tanh(x):
 class Exp(Function):
     def forward(self, x):
         # xp = cuda.get_array_module(x)
-        y = exp(x)
+        y = np.exp(x)
         return y
 
     def backward(self, gy):
