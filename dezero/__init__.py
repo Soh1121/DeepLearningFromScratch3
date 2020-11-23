@@ -20,6 +20,9 @@ else:
     from dezero.core import Config
     from dezero.layers import Layer
     from dezero.models import Model
+
+    import dezero.datasets
     import dezero.utils
     import dezero.functions
+    import dezero.transforms
 setup_variable()
