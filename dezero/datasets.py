@@ -1,11 +1,4 @@
-import os
-import gzip
-import tarfile
-import pickle
 import numpy as np
-import matplotlib.pyplot as plt
-from dezero.utils import get_file, cache_dir
-from dezero.transforms import Compose, Flatten, ToFloat, Normalize
 
 
 class Dataset:
@@ -28,7 +21,7 @@ class Dataset:
             return self.transform(self.data[index]), None
         else:
             return self.transform(self.data[index]),\
-                   self.target_transform(self.label[index])
+                self.target_transform(self.label[index])
 
     def __len__(self):
         return len(self.data)
