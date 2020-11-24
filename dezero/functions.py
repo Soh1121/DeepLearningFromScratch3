@@ -365,6 +365,21 @@ def softmax_cross_entropy(x, t):
 
 
 # =============================================================================
+# accuracy / dropout / batch_norm / embed_id
+# =============================================================================
+def accuracy(y, t):
+    """
+    [WAR] This function is not differentiable.
+    """
+    y, t = as_variable(y), as_variable(t)
+
+    pred = y.data.argmax(axis=1).reshape(t.shape)
+    result = (pred == t.data)
+    acc = result.mean()
+    return Variable(as_array(acc))
+
+
+# =============================================================================
 # max / min / clip
 # =============================================================================
 class Clip(Function):
