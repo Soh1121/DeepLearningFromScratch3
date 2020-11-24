@@ -22,6 +22,7 @@ else:
     from dezero.models import Model
 
     import dezero.datasets
+    import dezero.dataloaders
     import dezero.utils
     import dezero.functions
     import dezero.transforms
