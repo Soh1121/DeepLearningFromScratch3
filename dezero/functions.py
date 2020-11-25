@@ -1,5 +1,5 @@
 import numpy as np
-from dezero import utils
+from dezero import cuda, utils
 from dezero.core import Function, as_variable
 
 
@@ -8,7 +8,8 @@ from dezero.core import Function, as_variable
 # =============================================================================
 class Sin(Function):
     def forward(self, x):
-        y = np.sin(x)
+        xp = cuda.get_array_module(x)
+        y = xp.sin(x)
         return y
 
     def backward(self, gy):
@@ -23,7 +24,8 @@ def sin(x):
 
 class Cos(Function):
     def forward(self, x):
-        y = np.cos(x)
+        xp = cuda.get_array_module(x)
+        y = xp.cos(x)
         return y
 
     def backward(self, gy):
@@ -38,7 +40,8 @@ def cos(x):
 
 class Tanh(Function):
     def forward(self, x):
-        y = np.tanh(x)
+        xp = cuda.get_array_module(x)
+        y = xp.tanh(x)
         return y
 
     def backward(self, gy):
@@ -53,8 +56,8 @@ def tanh(x):
 
 class Exp(Function):
     def forward(self, x):
-        # xp = cuda.get_array_module(x)
-        y = np.exp(x)
+        xp = cuda.get_array_module(x)
+        y = xp.exp(x)
         return y
 
     def backward(self, gy):
@@ -123,7 +126,7 @@ class GetItemGrad(Function):
         self.in_shape = in_shape
 
     def forward(self, gy):
-        xp = dezero.cuda.get_array_module(gy)
+        xp = cuda.get_array_module(gy)
         gx = xp.zeros(self.in_shape, dtype=gy.dtype)
 
         if xp is np:
@@ -191,7 +194,8 @@ class BroadcastTo(Function):
 
     def forward(self, x):
         self.x_shape = x.shape
-        y = np.broadcast_to(x, self.shape)
+        xp = cuda.get_array_module(x)
+        y = xp.broadcast_to(x, self.shape)
         return y
 
     def backward(self, gy):
@@ -261,9 +265,9 @@ def sigmoid_simple(x):
 
 class Sigmoid(Function):
     def forward(self, x):
-        # xp = cuda.get_array_module(x)
-        y = 1 / (1 + exp(-x))
-        # y = xp.tanh(x * 0.5) * 0.5 + 0.5  # Better implementation
+        xp = cuda.get_array_module(x)
+        # y = 1 / (1 + exp(-x))
+        y = xp.tanh(x * 0.5) * 0.5 + 0.5  # Better implementation
         return y
 
     def backward(self, gy):
@@ -278,7 +282,8 @@ def sigmoid(x):
 
 class ReLU(Function):
     def forward(self, x):
-        y = np.maximum(x, 0.0)
+        xp = cuda.get_array_module(x)
+        y = xp.maximum(x, 0.0)
         return y
 
     def backward(self, gy):
