@@ -48,6 +48,16 @@ class Layer:
         for param in self.params():
             param.to_gpu()
 
+    def _flatten_params(self, params_dict, parent_key=""):
+        for name in self._params:
+            obj = self.__dict__[name]
+            key = parent_key + '/' + name if parent_key else name
+
+            if isinstance(obj, Layer):
+                obj._flatten_params(params_dict, key)
+            else:
+                params_dict[key] = obj
+
 # =============================================================================
 # Linear / Conv2d / Deconv2d
 # =============================================================================
