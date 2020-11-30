@@ -1,5 +1,6 @@
 import os
 import subprocess
+import urllib.request
 
 
 def _dot_var(v, verbose=False):
