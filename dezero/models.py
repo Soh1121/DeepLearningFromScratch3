@@ -34,7 +34,9 @@ class MLP(Model):
 # VGG
 # =============================================================================
 class VGG16(Model):
-    def __init__(self):
+    WEIGHTS_PATH = 'https://github.com/koki0702/dezero-models/releases/download/v0.1/vgg16.npz'
+
+    def __init__(self, pretrained=False):
         super().__init__()
         self.conv1_1 = L.Conv2d(64, kernel_size=3, stride=1, pad=1)
         self.conv1_2 = L.Conv2d(64, kernel_size=3, stride=1, pad=1)
@@ -52,6 +54,10 @@ class VGG16(Model):
         self.fc6 = L.Linear(4096)
         self.fc7 = L.Linear(4096)
         self.fc8 = L.Linear(1000)
+
+        if pretrained:
+            weights_path = utils.get_file(VGG16.WEIGHTS_PATH)
+            self.load_weights(weights_path)
 
     def forward(self, x):
         x = F.relu(self.conv1_1(x))
